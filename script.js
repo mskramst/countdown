@@ -2,11 +2,30 @@
 const urlParams = new URLSearchParams(window.location.search);
 const eventParam = urlParams.get('event');
 const dateParam = urlParams.get('date');
+const viewParam = urlParams.get('view');
+
+// Elements
+const eventNameElement = document.getElementById("event-name");
+const clockElement = document.getElementById("clock");
+const countdownElement = document.getElementById("countdown");
+
+// Routing logic
+if (viewParam === 'clock') {
+    eventNameElement.style.display = 'none';
+    countdownElement.style.display = 'none';
+    clockElement.style.fontSize = '320px'; // Significantly larger for clock-only view
+} else {
+    // Default view: show everything as requested
+}
 
 // Update event name if provided
 if (eventParam) {
-    document.getElementById("event-name").textContent = eventParam;
-    document.title = eventParam + " Countdown";
+    console.log("Original eventParam:", eventParam);
+    const formattedEvent = eventParam.split('_').join(' ');
+    console.log("Formatted event:", formattedEvent);
+    eventNameElement.textContent = formattedEvent;
+    console.log("DOM element content after setting:", eventNameElement.textContent);
+    document.title = formattedEvent + " Countdown";
 }
 
 // Define the date here (default if not provided in URL)
@@ -29,8 +48,11 @@ const minutesLabel = document.getElementById("minutesLabel");
 const secondsLabel = document.getElementById("secondsLabel");
 
 const x = setInterval(function() {
-const now = new Date().getTime();
-const distance = countDownDate - now;
+const now = new Date();
+const timeString = now.toLocaleTimeString([], { hour12: true, hour: '2-digit', minute: '2-digit' });
+clockElement.textContent = timeString;
+
+const distance = countDownDate - now.getTime();
 
 let days = Math.floor(distance / (1000 * 60 * 60 * 24));
 let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
